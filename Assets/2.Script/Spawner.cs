@@ -18,12 +18,13 @@ public class Spawner : MonoBehaviour
     {
         timer += Time.deltaTime;
         level = Mathf.FloorToInt (GameManager.instance.gameTime / 10f);
-
+        
         if ( timer > spawnData[level].spawnTime)
         {
             timer = 0f;
             Spawn();
         }
+        
     }
 
     void Spawn()
@@ -37,8 +38,8 @@ public class Spawner : MonoBehaviour
 [System.Serializable]
 public class SpawnData
 {
-    public int spriteType;
     public float spawnTime; // 소환시간
+    public int spriteType;
     public int health; // 체력
     public float speed; // 속도
 }

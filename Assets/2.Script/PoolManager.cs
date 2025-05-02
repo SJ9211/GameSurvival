@@ -36,7 +36,7 @@ public class PoolManager : MonoBehaviour
             }
         }
         // 못 찾았을시
-            if (select == null)
+            if (!select)
             {
                 // 새롭게 생성하고 select 변수에 할당
                 select = Instantiate(prefabs[index], transform);
