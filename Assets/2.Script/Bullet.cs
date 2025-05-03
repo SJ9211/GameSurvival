@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float damage;
+    public float damage = 5.0f;
     public int per;
     
     Rigidbody2D rb;

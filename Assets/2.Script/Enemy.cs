@@ -7,8 +7,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float speed;
-    public float health = 10.0f; // 현재의 체력
-    public float maxHealth; // 최대의 체력
+    public float health = 15.0f; // 현재의 체력
+    public float maxHealth;// 최대의 체력
     public RuntimeAnimatorController[] animCon; 
     public Rigidbody2D target;
     Rigidbody2D rb;
@@ -21,6 +21,7 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriter = GetComponent<SpriteRenderer>();
+       
     }
 
     void FixedUpdate()
@@ -59,18 +60,20 @@ public class Enemy : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Bullet"))
+        if (!collision.CompareTag("Bullet") || !isLive)
             return;
 
-        health -= collision.GetComponent<Bullet>().damage;
+        health -= collision.GetComponent<Bullet>().damage;  
 
         if(health > 0)
         {
-
+ 
         }
         else
         {
-            Dead();
+           Dead();
+           GameManager.instance.Kill++;
+           GameManager.instance.GetExp();
         }
     }
 
