@@ -16,13 +16,9 @@ public class Weapon : MonoBehaviour
 
     void Awake()
     {
-        player = GetComponentInParent<Player>();
+        player = GameManager.instance.player;
     }
 
-    void Start()
-    {
-        Init();
-    }
     void Update()
     {
         switch (id)
@@ -54,10 +50,31 @@ public class Weapon : MonoBehaviour
 
         if(id == 0)
           Batch();
+
+        player.BroadcastMessage("ApplayGear", SendMessageOptions.DontRequireReceiver);
     }
 
-    public void Init()
+    public void Init(ItemData data)
     {
+        // 기본적인 세팅
+        name = "Weapon" + data.itemId;
+        transform.parent = player.transform;  // 부모 오브젝트를 플레이어로 지정
+        transform.localPosition = Vector3.zero; // 지역위치인 localPosition을 원점으로 변경
+
+        // Property 세팅
+        id = data.itemId;
+        damage = data.baseDamage;
+        count = data.baseCount;
+
+        for(int index = 0; index < GameManager.instance.pool.prefabs.Length; index++)
+        {
+            if (data.projectile == GameManager.instance.pool.prefabs[index])
+            {
+                prefabId = index;
+                    break;
+            }
+        }
+
         switch (id)
         {
             case 0:
@@ -68,6 +85,8 @@ public class Weapon : MonoBehaviour
                 speed = 0.3f;
                 break;
         }
+
+        player.BroadcastMessage("ApplayGear", SendMessageOptions.DontRequireReceiver); // 특정 함수 호출을 모든 자식에게 방송하는 함수
     }
     
     void Batch()
