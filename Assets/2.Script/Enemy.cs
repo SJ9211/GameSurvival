@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour
     Rigidbody2D rb;
     SpriteRenderer spriter;
     Animator anim;
+    Collider2D coll;
+    WaitForFixedUpdate wait;
     bool isLive;
 
     void Awake()
@@ -21,13 +23,16 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriter = GetComponent<SpriteRenderer>();
-       
+        wait = new WaitForFixedUpdate();  
     }
 
     void FixedUpdate()
     {
+          if (!GameManager.instance.isLive)
+            return;
+
         if (!isLive)
-           return;
+            return;
 
         Vector2 dirVec = target.position - rb.position;
         Vector2 nextVec = dirVec.normalized * speed * Time.fixedDeltaTime;
@@ -37,8 +42,11 @@ public class Enemy : MonoBehaviour
 
     void LateUpdate()
     {
+          if (!GameManager.instance.isLive)
+            return;
+            
          if (!isLive)
-           return;
+            return;
 
         spriter.flipX = target.position.x < rb.position.x;
     }

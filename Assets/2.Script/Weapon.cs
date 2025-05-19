@@ -21,14 +21,17 @@ public class Weapon : MonoBehaviour
 
     void Update()
     {
+          if (!GameManager.instance.isLive)
+            return;
+            
         switch (id)
         {
             case 0:
-               transform.Rotate(Vector3.back * speed * Time.deltaTime);
+                transform.Rotate(Vector3.back * speed * Time.deltaTime);
                 break;
             default:
                 timer += Time.deltaTime;
-             if(timer > speed)
+                if (timer > speed)
                 {
                     timer = 0f;
                     Fire();
@@ -36,11 +39,6 @@ public class Weapon : MonoBehaviour
                 break;
         }
 
-        // Test Code
-        if(Input.GetButtonDown("Jump"))
-        {
-            LevelUp(10, 1);
-        }
     }
 
     public void LevelUp(float damage, int per)

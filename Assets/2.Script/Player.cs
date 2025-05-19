@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public Vector2 vector2;
+    public Vector2 inputVec;
     public float speed;
     public Scanner scanner;
     Rigidbody2D rb;
     SpriteRenderer spriter;
     Animator anim;
-    
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -21,25 +21,52 @@ public class Player : MonoBehaviour
         scanner = GetComponent<Scanner>();
     }
 
-    
+
     void Update()
     {
-        vector2.x = Input.GetAxisRaw("Horizontal");
-        vector2.y = Input.GetAxisRaw("Vertical");
+        if (!GameManager.instance.isLive)
+            return;
+        inputVec.x = Input.GetAxisRaw("Horizontal");
+        inputVec.y = Input.GetAxisRaw("Vertical");
     }
 
     void FixedUpdate()
     {
-        Vector2 nextVec = vector2.normalized * speed * Time.fixedDeltaTime;
+        if (!GameManager.instance.isLive)
+            return;
+        Vector2 nextVec = inputVec.normalized * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + nextVec);
     }
 
     void LateUpdate()
     {
-        anim.SetFloat("Speed", vector2.magnitude);
-        if (vector2.x != 0)
+        if (!GameManager.instance.isLive)
+            return;
+
+        anim.SetFloat("Speed", inputVec.magnitude);
+
+        if (inputVec.x != 0)
         {
-            spriter.flipX = vector2.x < 0;
+            spriter.flipX = inputVec.x < 0;
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!GameManager.instance.isLive)
+            return;
+
+        GameManager.instance.health -= Time.deltaTime * 10;
+
+        if (GameManager.instance.health < 0)
+        {
+            for (int index = 2; index < transform.childCount; index++)
+            {
+                transform.GetChild(index).gameObject.SetActive(false);
+            }
+
+            anim.SetTrigger("Die");
+            GameManager.instance.GameOver();
         }
     }
 }
