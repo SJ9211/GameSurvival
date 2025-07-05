@@ -89,7 +89,7 @@ public class Weapon : MonoBehaviour
     
     void Batch()
     {
-        for (int index=0; index < count; index++)
+        for (int index = 0; index < count; index++)
         {
            Transform bullet;
            
@@ -109,22 +109,24 @@ public class Weapon : MonoBehaviour
            bullet.Rotate(rotVec);
            bullet.Translate(bullet.up * 1.0f, Space.World); // 이동방향
 
-           bullet.GetComponent<Bullet>().Init(damage,-1,Vector3.zero); // -1 무한관통
+           bullet.GetComponent<Bullet>().Init(damage, -100 ,Vector3.zero); // -100 무한관통
         }
     }
 
     void Fire()
     {
         if (!player.scanner.nearestTaget)
-             return;
+            return;
 
         Vector3 targerPos = player.scanner.nearestTaget.position; // 위치
-        Vector3 dir = targerPos - transform.position; 
+        Vector3 dir = targerPos - transform.position;
         dir = dir.normalized;
 
         Transform bullet = GameManager.instance.pool.Get(prefabId).transform; // 총알 가져오기
         bullet.position = transform.position;
         bullet.rotation = Quaternion.FromToRotation(Vector3.up, dir);
-        bullet.GetComponent<Bullet>().Init(damage,count,dir);
+        bullet.GetComponent<Bullet>().Init(damage, count, dir);
+        
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.Range);
     }
 }

@@ -13,12 +13,13 @@ public class GameManager : MonoBehaviour
     public float maxGameTime = 2 * 10f;
 
     [Header("# Player info")] // Player 속성 
+    public int playerId;
     public float health;
     public float maxHealth = 100;
     public int level;
     public int Kill;
     public int exp;
-    public int[] nextExp = { 10, 30, 60, 100, 150, 210, 280, 360, 450, 600 }; // 각 레벨에 필요한 경험치 
+    public int[] nextExp = { 3, 5, 10, 100, 150, 210, 280, 360, 450, 600 }; // 각 레벨에 필요한 경험치 
 
     [Header("# Game Object")] // 게임오브젝트 속성
     public PoolManager pool;
@@ -33,28 +34,40 @@ public class GameManager : MonoBehaviour
         instance = this;
     }
 
-    public void GameStart()
+    public void GameStart(int id)
     {
+        playerId = id;
         health = maxHealth;
 
-        // 임시 스크립트 (첫번째 캐릭터 선택)
-        uiLevelUp.Select(0);
+        player.gameObject.SetActive(true);
+        uiLevelUp.Select(playerId % 2); // 캐릭터 선택 코드
         Resume();
+
+        AudioManager.instance.PlayBgm(true);
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.Select);
     }
 
     public void GameOver()
     {
         StartCoroutine(GameOverRoutine());
+
     }
 
     IEnumerator GameOverRoutine()
     {
         isLive = false;
+
         yield return new WaitForSeconds(0.5f);
+
         uiResult.gameObject.SetActive(true);
         uiResult.Lose();
         Stop();
+
+        
+        AudioManager.instance.PlayBgm(false);
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.Lose);
     }
+
 
         public void GameVictory()
     {
@@ -71,10 +84,19 @@ public class GameManager : MonoBehaviour
         uiResult.gameObject.SetActive(true);
         uiResult.Win();
         Stop();
+
+        
+        AudioManager.instance.PlayBgm(false);
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.Win);
     }
     public void GameRetry()
     {
         SceneManager.LoadScene(0);
+    }
+    
+    public void GameQuit()
+    {
+        Application.Quit();
     }
 
     void Update()

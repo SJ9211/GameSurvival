@@ -71,17 +71,20 @@ public class Enemy : MonoBehaviour
         if (!collision.CompareTag("Bullet") || !isLive)
             return;
 
-        health -= collision.GetComponent<Bullet>().damage;  
+        health -= collision.GetComponent<Bullet>().damage;
 
-        if(health > 0)
+        if (health > 0)
         {
- 
+            AudioManager.instance.PlaySfx(AudioManager.Sfx.Hit);
         }
         else
         {
-           Dead();
-           GameManager.instance.Kill++;
-           GameManager.instance.GetExp();
+            Dead();
+            GameManager.instance.Kill++;
+            GameManager.instance.GetExp();
+
+            if ( GameManager.instance.isLive) // 안쪽 로직이 한줄이라서 중괄호 생략함
+           AudioManager.instance.PlaySfx(AudioManager.Sfx.Dead);
         }
     }
 

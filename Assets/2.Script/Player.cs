@@ -3,12 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 public class Player : MonoBehaviour
 {
     public Vector2 inputVec;
     public float speed;
     public Scanner scanner;
+    public Hand[] hands;
+
+
     Rigidbody2D rb;
     SpriteRenderer spriter;
     Animator anim;
@@ -21,7 +25,11 @@ public class Player : MonoBehaviour
         scanner = GetComponent<Scanner>();
     }
 
-
+    void OnEnable()
+    {
+        speed *= Character.Speed;
+    }
+    
     void Update()
     {
         if (!GameManager.instance.isLive)

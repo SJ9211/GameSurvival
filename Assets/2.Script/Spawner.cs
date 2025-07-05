@@ -5,36 +5,37 @@ using UnityEngine.PlayerLoop;
 
 public class Spawner : MonoBehaviour
 {
-   public Transform[] spawnPoint;
-   public SpawnData[] spawnData;
-   int level;
-   float timer;
+    public Transform[] spawnPoint;
+    public SpawnData[] spawnData;
+    public float levelTime;
+    int level;
+    float timer;
 
     void Awake()
     {
         spawnPoint = GetComponentsInChildren<Transform>();
+        levelTime = GameManager.instance.maxGameTime / spawnData.Length;
     }
     void Update()
     {
-          if (!GameManager.instance.isLive)
+        if (!GameManager.instance.isLive)
             return;
-            
+
         timer += Time.deltaTime;
-        level = Mathf.FloorToInt (GameManager.instance.gameTime / 10f);
-        
-        if ( timer > spawnData[level].spawnTime)
+        level = Mathf.Min(Mathf.FloorToInt(GameManager.instance.gameTime / levelTime), spawnData.Length -1);
+
+        if (timer > spawnData[level].spawnTime)
         {
-            timer = 0f;
+            timer = 0;
             Spawn();
         }
-        
     }
 
     void Spawn()
     {
-       GameObject enemy = GameManager.instance.pool.Get(0);
-       enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
-       enemy.GetComponent<Enemy>().Init(spawnData[level]);
+        GameObject enemy = GameManager.instance.pool.Get(0);
+        enemy.transform.position = spawnPoint[Random.Range(1, spawnPoint.Length)].position;
+        enemy.GetComponent<Enemy>().Init(spawnData[level]);
     }
 }
 
